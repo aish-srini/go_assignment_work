@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"time"
+	"flag"
 )
 
 /*
@@ -24,7 +25,12 @@ import (
  *      command line.
  */
 func main() {
-
+	wordonePtr := flag.String("word", "pingpong client", "a string")
+	wordtwoPtr := flag.String("word", "pingpong server", "a string")
+	flag.Parse()
+	
+	fmt.Println("pingpong client", *client)
+	fmt.Println("pingpong server", *server)
 }
 
 func client() {
@@ -33,17 +39,16 @@ func client() {
 	reader := bufio.NewReader(clientConn)
 	for i := 0; i < numIters; i++ {
 		fmt.Printf("(%d) Sending: %s", i, sendMsg)
-		if _, err := clientConn.Write(?); err != nil {
+		if _, err := clientConn.Write(sendMsg); err != nil {
 			fmt.Println("Send failed:", err)
 			os.Exit(1)
 		}
-
-		recvMsg, err := ?
+		recvMsg, err := reader.ReadString('pingpong client'); err = nil
 		fmt.Printf("(%d) Received: %s", i, recvMsg)
 
-		time.?
+		time.Tick(100 * time.Second)
 	}
-
+	
 	clientConn.Close()
 }
 
@@ -60,9 +65,9 @@ func server() {
 		os.Exit(1)
 	}
 	reader := bufio.NewReader(serverConn)
-
+	
 	for i := 0; i < numIters; i++ {
-		recvMsg, err := ?
+		recvMsg, err := ln.Accept()
 		if err != nil {
 			fmt.Println("Receive failed:", err)
 			os.Exit(1)
@@ -70,10 +75,13 @@ func server() {
 		fmt.Printf("(%d) Received: %s", i, recvMsg)
 
 		fmt.Printf("(%d) Sending: %s\n", i, sendMsg)
-		if _, err := serverConn.Write(?); err != nil {
+		if _, err := serverConn.Write(recvMsg); err != nil {
 			fmt.Println("Send failed:", err)
 			os.Exit(1)
 		}
 	}
+	
 	serverConn.Close()
 }
+
+
