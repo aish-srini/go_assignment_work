@@ -39,7 +39,7 @@ func client() {
 	reader := bufio.NewReader(clientConn)
 	for i := 0; i < numIters; i++ {
 		fmt.Printf("(%d) Sending: %s", i, sendMsg)
-		if _, err := clientConn.Write(sendMsg); err != nil {
+		if _, err := clientConn.Write(reader []byte); err != nil {
 			fmt.Println("Send failed:", err)
 			os.Exit(1)
 		}
@@ -75,7 +75,7 @@ func server() {
 		fmt.Printf("(%d) Received: %s", i, recvMsg)
 
 		fmt.Printf("(%d) Sending: %s\n", i, sendMsg)
-		if _, err := serverConn.Write(recvMsg); err != nil {
+		if _, err := serverConn.Write(reader []byte); err != nil {
 			fmt.Println("Send failed:", err)
 			os.Exit(1)
 		}
